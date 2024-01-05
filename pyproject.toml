@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "goss_practice"
+version = "0.1.0"
+description = ""
+authors = ["Mikhail Sokolov <lmikhailsokolovl@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.100.0"
+uvicorn = "^0.22.0"
+pydantic = "^2.1.1"
+pydantic-settings = "^2.0.3"
+pymongo = "^4.6.1"
+motor = "^3.3.2"
+fastapi-restful = "^0.5.0"
+typing-inspect = "^0.9.0"
+certifi = "^2023.11.17"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.12.0"
+black = "^23.7.0"
+flake8 = "^6.0.0"
+mypy = "^1.4.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+py_version=310
+profile="black"
+line_length = 79
