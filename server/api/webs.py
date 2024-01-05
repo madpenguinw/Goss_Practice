@@ -1,12 +1,16 @@
+import json
 from datetime import datetime
 from http import HTTPStatus
 
 from bson.objectid import ObjectId
-from fastapi import APIRouter
+from fastapi import APIRouter, File, UploadFile
+from fastapi.responses import JSONResponse
 from fastapi_restful.cbv import cbv
+from pydantic import ValidationError
 
-from server.conections.base import collection
+from server.conections.webs import collection
 from server.constants.base import FORMAT
+from server.exceptions.base import IncorrectInputData
 from server.exceptions.webs import WebNotFoundException
 from server.schemas.links import Link
 from server.schemas.terms import Term
@@ -68,6 +72,15 @@ class WebsAPI:
             ],
         )
 
+    @router.get("/web/{id}/json", response_class=JSONResponse)
+    async def get_web_as_json(self, _id: str) -> JSONResponse:
+        """
+        Get a full web information and return as JSON file
+        """
+        web = await collection.find_one({"_id": ObjectId(_id)})
+        web["_id"] = str(web["_id"])
+        return JSONResponse(web)
+
     @router.post("/web", status_code=HTTPStatus.CREATED)
     async def create_web(
         self,
@@ -101,6 +114,32 @@ class WebsAPI:
         return ShortWebOut(
             id=str(inserted_web.inserted_id),
             name=web_in.name,
+        )
+
+    @router.post("/web/json-upload", status_code=HTTPStatus.CREATED)
+    async def create_web_from_json(
+        self,
+        file: UploadFile = File(...),
+    ) -> ShortWebOut:
+        """
+        Create a web from JSON file and save it to MongoDB
+        """
+
+        created = datetime.utcnow().strftime(FORMAT)
+
+        try:
+            web_json = await file.read()
+            web_data = json.loads(web_json)
+
+            WebIn(**web_data)
+        except ValidationError:
+            raise IncorrectInputData()
+
+        web_data["created"] = created
+        inserted_web = await collection.insert_one(web_data)
+        return ShortWebOut(
+            id=str(inserted_web.inserted_id),
+            name=web_data["name"],
         )
 
     @router.delete("/web/{id}", status_code=HTTPStatus.NO_CONTENT)

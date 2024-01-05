@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PORT: int = 9000
     MONGO_DB_NAME: str = "db_name"
-    MONGO_COLLECTION: str = "collection"
+    MONGO_WEBS_COLLECTION: str = "collection"
     MONGO_USER: str = "user"
     MONGO_PASSWORD: str = "password"
 
