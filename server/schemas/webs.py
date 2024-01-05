@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from server.schemas.base import BaseForm
 from server.schemas.links import Link
 from server.schemas.terms import Term

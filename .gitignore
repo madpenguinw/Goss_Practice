@@ -137,5 +137,8 @@ pnpm-debug.log*
 # ENV variables
 env_vars.sh
 
+# JSON test file
+test_file.json
+
 # Databases
 *.db

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from http import HTTPStatus
 
 from bson.objectid import ObjectId
 from fastapi import APIRouter
@@ -8,12 +8,10 @@ from fastapi_restful.cbv import cbv
 from server.conections.base import collection
 from server.constants.base import FORMAT
 from server.exceptions.webs import WebNotFoundException
-from server.schemas.webs import ShortWebOut, ShortWebOutList, WebIn, WebOut
-from server.schemas.terms import Term
 from server.schemas.links import Link
+from server.schemas.terms import Term
+from server.schemas.webs import ShortWebOut, ShortWebOutList, WebIn, WebOut
 from server.settings import get_settings
-from http import HTTPStatus
-
 
 router = APIRouter()
 settings = get_settings()
@@ -24,7 +22,7 @@ class WebsAPI:
     """
     Webs API endpoints
     """
-    
+
     @router.get("/web/")
     async def get_all_webs(self) -> ShortWebOutList:
         """
@@ -36,12 +34,7 @@ class WebsAPI:
             _id = document.get("_id")
             name = document.get("name")
             if _id and name:
-                result_values.append(
-                    ShortWebOut(
-                        id=str(_id),
-                        name=name
-                    )
-                )
+                result_values.append(ShortWebOut(id=str(_id), name=name))
         return ShortWebOutList(values=result_values)
 
     @router.get("/web/{id}")
@@ -90,8 +83,18 @@ class WebsAPI:
             name=web_in.name,
             author=web_in.author,
             created=created,
-            terms=[dict(id=term.id, name=term.name, description=term.description) for term in terms],
-            links=[dict(from_term=link.from_term, name=link.name, to_term=link.to_term) for link in links]
+            terms=[
+                dict(id=term.id, name=term.name, description=term.description)
+                for term in terms
+            ],
+            links=[
+                dict(
+                    from_term=link.from_term,
+                    name=link.name,
+                    to_term=link.to_term,
+                )
+                for link in links
+            ],
         )
         inserted_web = await collection.insert_one(web_dict)
         print(type(inserted_web.inserted_id))

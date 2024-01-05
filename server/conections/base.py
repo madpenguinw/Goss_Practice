@@ -1,5 +1,6 @@
 import certifi
 from motor import motor_asyncio
+
 from server.settings import get_settings
 
 settings = get_settings()
