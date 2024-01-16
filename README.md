@@ -10,6 +10,11 @@
 - запустить VPN с сервером, находящимся не в РФ
 - docker run -p 8080:8080 goss_practice
 ```
+Или можно использовать уже готовый образ с Docker-Hub
+```bash
+- docker pull penguinw/goss_practice:latest
+- docker run -p 8080:8080 goss_practice
+```
 
 # Пример заполнения файла env_vars.sh
 ```bash
